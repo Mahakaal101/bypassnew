@@ -9,10 +9,12 @@
             "description": "Your bot token.",
             "required": true
         },
+           {
         "API_ID":"13934693"
             "description": "Get this value from https://my.telegram.org",
             "required": true
         },
+           {
         "API_HASH":"c83106d1b09e68264d23287a91c8a2db"
             "description": "Get this value from https://my.telegram.org",
             "required": true
