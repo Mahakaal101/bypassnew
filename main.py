@@ -5,6 +5,7 @@ from os import environ, remove
 from threading import Thread
 from json import load
 from re import search
+import os
 
 from texts import HELP_TEXT
 import bypasser
