@@ -18,10 +18,12 @@ with open('config.json', 'r') as f: DATA = load(f)
 def getenv(var): return environ.get(var) or DATA.get(var, None)
 
 
-UPTOBOX_TOKEN = getenv("UPTOBOX_TOKEN")
-ndus = getenv("TERA_COOKIE")
-if ndus is None: TERA_COOKIE = None
-else: TERA_COOKIE = {"ndus": ndus}
+UPTOBOX_TOKEN = environ.get("UPTOBOX_TOKEN", "4a4ecf35552fea876da1d63e7fd000d2cb2fo")
+ndus = environ.get("TERA_COOKIE", "YQOR7exteHuiC7XNl_TAD_ZaXGexSokJJwoblC4S")
+if ndus is None:
+    TERA_COOKIE = None
+else:
+    TERA_COOKIE = {"ndus": ndus}
 
 
 ddllist = ['yadi.sk','disk.yandex.com','mediafire.com','uptobox.com','osdn.net','github.com',
