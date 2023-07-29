@@ -33,6 +33,13 @@ CF = os.environ.get("CLOUDFLARE", "yyl4ovMjc886LOOzPOydt35wTovRPbBCLFvulEJyBl4-1
 
 ############################################################
 # Lists
+linkvertise_list = [
+    "linkvertise.com",
+    "link-target.net",
+    "link-center.net",
+    "link-hub.net",
+    "direct-link.net",
+]
 
 otherslist = ["exe.io","exey.io","sub2unlock.net","sub2unlock.com","rekonise.com","letsboost.net","ph.apps2app.com","mboost.me",
 "sub4unlock.com","ytsubme.com","social-unlock.com","boost.ink","goo.gl","shrto.ml","t.co"]
