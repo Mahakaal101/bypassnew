@@ -3112,7 +3112,7 @@ def shortners(url):
     # others
     elif ispresent(otherslist,url):
         print("entered others: ",url)
-        return others(url)11111
+        return others(url)
 
     # else
     else: return "Not in Supported Sites"
