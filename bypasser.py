@@ -13,6 +13,7 @@ import ddl
 from cfscrape import create_scraper
 from json import load
 from os import environ
+import os
 
 with open('config.json', 'r') as f: DATA = load(f)
 def getenv(var): return environ.get(var) or DATA.get(var, None)
