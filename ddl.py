@@ -17,6 +17,7 @@ from os import environ
 with open('config.json', 'r') as f: DATA = load(f)
 def getenv(var): return environ.get(var) or DATA.get(var, None)
 
+from exceptions import DirectDownloadLinkException
 
 UPTOBOX_TOKEN = environ.get("UPTOBOX_TOKEN", "4a4ecf35552fea876da1d63e7fd000d2cb2fo")
 ndus = environ.get("TERA_COOKIE", "YQOR7exteHuiC7XNl_TAD_ZaXGexSokJJwoblC4S")
