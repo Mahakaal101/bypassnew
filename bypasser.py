@@ -145,6 +145,207 @@ def scrapeIndex(url, username="none", password="none"):
     if len(result)==0: return None
     return format(result)
 
+################################################################
+
+# AppDrive or DriveApp etc. Look-Alike Link and as well as the Account
+# Details (Required for Login Required Links only)
+
+
+def unified(url):
+    if ddl.is_share_link(url):
+        if "https://gdtot" in url:
+            return ddl.gdtot(url)
+        else:
+            return ddl.sharer_scraper(url)
+
+    try:
+        Email = "OPTIONAL"
+        Password = "OPTIONAL"
+
+        account = {"email": Email, "passwd": Password}
+        client = cloudscraper.create_scraper(allow_brotli=False)
+        client.headers.update(
+            {
+                "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+            }
+        )
+        data = {"email": account["email"], "password": account["passwd"]}
+        client.post(f"https://{urlparse(url).netloc}/login", data=data)
+        res = client.get(url)
+        key = re.findall('"key",\s+"(.*?)"', res.text)[0]
+        ddl_btn = etree.HTML(res.content).xpath("//button[@id='drc']")
+        info = re.findall(">(.*?)<\/li>", res.text)
+        info_parsed = {}
+        for item in info:
+            kv = [s.strip() for s in item.split(":", maxsplit=1)]
+            info_parsed[kv[0].lower()] = kv[1]
+        info_parsed = info_parsed
+        info_parsed["error"] = False
+        info_parsed["link_type"] = "login"
+        headers = {
+            "Content-Type": f"multipart/form-data; boundary={'-'*4}_",
+        }
+        data = {"type": 1, "key": key, "action": "original"}
+        if len(ddl_btn):
+            info_parsed["link_type"] = "direct"
+            data["action"] = "direct"
+        while data["type"] <= 3:
+            boundary = f'{"-"*6}_'
+            data_string = ""
+            for item in data:
+                data_string += f"{boundary}\r\n"
+                data_string += f'Content-Disposition: form-data; name="{item}"\r\n\r\n{data[item]}\r\n'
+            data_string += f"{boundary}--\r\n"
+            gen_payload = data_string
+            try:
+                response = client.post(url, data=gen_payload, headers=headers).json()
+                break
+            except BaseException:
+                data["type"] += 1
+        if "url" in response:
+            info_parsed["gdrive_link"] = response["url"]
+        elif "error" in response and response["error"]:
+            info_parsed["error"] = True
+            info_parsed["error_message"] = response["message"]
+        else:
+            info_parsed["error"] = True
+            info_parsed["error_message"] = "Something went wrong :("
+        if info_parsed["error"]:
+            return info_parsed
+        if "driveapp" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        info_parsed["src_url"] = url
+        if "drivehub" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        if "gdflix" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+
+        if "drivesharer" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        if "drivebit" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        if "drivelinks" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        if "driveace" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        if "drivepro" in urlparse(url).netloc and not info_parsed["error"]:
+            res = client.get(info_parsed["gdrive_link"])
+            drive_link = etree.HTML(res.content).xpath(
+                "//a[contains(@class,'btn')]/@href"
+            )[0]
+            info_parsed["gdrive_link"] = drive_link
+        if info_parsed["error"]:
+            return "Faced an Unknown Error!"
+        return info_parsed["gdrive_link"]
+    except BaseException:
+        return "Unable to Extract GDrive Link"
+
+
+# appdrive/pack
+
+
+def appdrivepack(url):
+    r = requests.get(url)
+    htmlContent = r.content
+    soup = BeautifulSoup(htmlContent, "html.parser")
+    appdrive = soup.find_all("a")
+    all_links = set()
+    for i in appdrive:
+        if i.get("href") not in ["/", "#", ""] and "/file/" in i.get("href"):
+            if i.get("href").startswith("http"):
+                link = i.get("href")
+            else:
+                link = "https://appdrive.me" + i.get("href")
+            all_links.add(link)
+    url = ""
+    for l in all_links:
+        link = unified(l)
+        url += link + "\n\n"
+    return url
+
+
+################################################################
+
+
+def try2link_bypass(url):
+    client = cloudscraper.create_scraper(allow_brotli=False)
+
+    url = url[:-1] if url[-1] == "/" else url
+
+    params = (("d", int(time.time()) + (60 * 4)),)
+    r = client.get(url, params=params, headers={"Referer": "https://newforex.online/"})
+
+    soup = BeautifulSoup(r.text, "html.parser")
+    inputs = soup.find(id="go-link").find_all(name="input")
+    data = {input.get("name"): input.get("value") for input in inputs}
+    time.sleep(7)
+
+    headers = {
+        "Host": "try2link.com",
+        "X-Requested-With": "XMLHttpRequest",
+        "Origin": "https://try2link.com",
+        "Referer": url,
+    }
+
+    bypassed_url = client.post(
+        "https://try2link.com/links/go", headers=headers, data=data
+    )
+    return bypassed_url.json()["url"]
+
+
+def try2link_scrape(url):
+    client = cloudscraper.create_scraper(allow_brotli=False)
+    h = {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+    }
+    res = client.get(url, cookies={}, headers=h)
+    url = "https://try2link.com/" + re.findall("try2link\.com\/(.*?) ", res.text)[0]
+    return try2link_bypass(url)
+
+
+def psa_bypasser(psa_url):
+    client = cloudscraper.create_scraper(allow_brotli=False)
+    r = client.get(psa_url)
+    soup = BeautifulSoup(r.text, "html.parser").find_all(
+        class_="dropshadowboxes-drop-shadow dropshadowboxes-rounded-corners dropshadowboxes-inside-and-outside-shadow dropshadowboxes-lifted-both dropshadowboxes-effect-default"
+    )
+    links = ""
+    for link in soup:
+        try:
+            exit_gate = link.a.get("href")
+            links = links + try2link_scrape(exit_gate) + "\n"
+        except BaseException:
+            pass
+    return links
 
 ##############################################################
 # tnlink
