@@ -21,14 +21,14 @@ def getenv(var): return environ.get(var) or DATA.get(var, None)
 ##########################################################
 # ENVs
 
-GDTot_Crypt = getenv("CRYPT","b0lDek5LSCt6ZjVRR2EwZnY4T1EvVndqeDRtbCtTWmMwcGNuKy8wYWpDaz0%3D")
-Laravel_Session = getenv("Laravel_Session","")
-XSRF_TOKEN = getenv("XSRF_TOKEN","")
-DCRYPT = getenv("DRIVEFIRE_CRYPT","cnhXOGVQNVlpeFZlM2lvTmN6Z2FPVWJiSjVBbWdVN0dWOEpvR3hHbHFLVT0%3D")
-KCRYPT = getenv("KOLOP_CRYPT","a1V1ZWllTnNNNEZtbkU4Y0RVd3pkRG5UREFJZFlUaC9GRko5NUNpTHNFcz0%3D")
-HCRYPT = getenv("HUBDRIVE_CRYPT","N25hV1pxMXZWUTdFWEh6L2Q2WFJyQWo2NGJEcWN6R2E5ci91aG8zSFF5Zz0%3D")
-KATCRYPT = getenv("KATDRIVE_CRYPT","bzQySHVKSkY0bEczZHlqOWRsSHZCazBkOGFDak9HWXc1emRTL1F6Rm9ubz0%3D")
-CF = getenv("CLOUDFLARE", "yyl4ovMjc886LOOzPOydt35wTovRPbBCLFvulEJyBl4-1690652602-0-0.2.1690652602")
+GDTot_Crypt = os.environ.get("CRYPT","b0lDek5LSCt6ZjVRR2EwZnY4T1EvVndqeDRtbCtTWmMwcGNuKy8wYWpDaz0%3D")
+Laravel_Session = os.environ.get("Laravel_Session","")
+XSRF_TOKEN = os.environ.get("XSRF_TOKEN","")
+DCRYPT = os.environ.get("DRIVEFIRE_CRYPT","cnhXOGVQNVlpeFZlM2lvTmN6Z2FPVWJiSjVBbWdVN0dWOEpvR3hHbHFLVT0%3D")
+KCRYPT = os.environ.get("KOLOP_CRYPT","a1V1ZWllTnNNNEZtbkU4Y0RVd3pkRG5UREFJZFlUaC9GRko5NUNpTHNFcz0%3D")
+HCRYPT = os.environ.get("HUBDRIVE_CRYPT","N25hV1pxMXZWUTdFWEh6L2Q2WFJyQWo2NGJEcWN6R2E5ci91aG8zSFF5Zz0%3D")
+KATCRYPT = os.environ.get("KATDRIVE_CRYPT","bzQySHVKSkY0bEczZHlqOWRsSHZCazBkOGFDak9HWXc1emRTL1F6Rm9ubz0%3D")
+CF = os.environ.get("CLOUDFLARE", "yyl4ovMjc886LOOzPOydt35wTovRPbBCLFvulEJyBl4-1690652602-0-0.2.1690652602")
 
 ############################################################
 # Lists
